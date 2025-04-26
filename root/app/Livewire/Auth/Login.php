@@ -15,10 +15,9 @@ use Livewire\Component;
 #[Layout('components.layouts.auth')]
 class Login extends Component
 {
-    #[Validate('required|string|email')]
+
     public string $email = '';
 
-    #[Validate('required|string')]
     public string $password = '';
 
     public bool $remember = false;
@@ -28,8 +27,8 @@ class Login extends Component
      */
     public function login(): void
     {
-        $validation = $this->validate([
-            'email' => ['required', 'email'],
+        $this->validate([
+            'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string']
         ]);
 
@@ -46,7 +45,20 @@ class Login extends Component
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
 
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+        $user = Auth::user();
+
+
+        if ($user->hasRole('Admin')) {
+            $this->redirectIntended(route('filament.admin.pages.dashboard'), navigate: true);
+        }
+        if ($user->hasRole('Employee')) {
+            $this->redirectIntended(route('filament.employee.pages.dashboard'), navigate: true);
+        }
+        if ($user->hasRole('Manager')) {
+            $this->redirectIntended(route('filament.manager.pages.dashboard'), navigate: true);
+        }
+
+        // $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
     }
 
     /**
@@ -75,6 +87,6 @@ class Login extends Component
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
+        return Str::transliterate(Str::lower($this->email) . '|' . request()->ip());
     }
 }

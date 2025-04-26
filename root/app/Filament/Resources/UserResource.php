@@ -6,6 +6,8 @@ use App\Filament\Resources\UserResource\Pages;
 
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -31,10 +33,32 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->required()->label("Input Name"),
-                TextInput::make('email')->email()->required()->label("Input Email"),
-                TextInput::make('password')->password()->label("Input Password")->dehydrateStateUsing(fn($state) => filled($state) ? bcrypt($state) : null)->required(fn(string $context): bool => $context === 'create')->hiddenOn('edit')->visibleOn('create'),
-
+                TextInput::make('name')
+                    ->required()
+                    ->label("Input Name")
+                    ->maxLength(255),
+                TextInput::make('email')
+                    ->email()
+                    ->required()
+                    ->maxLength(
+                        255
+                    )->label("Input Email")
+                    ->unique(ignoreRecord: true),
+                DateTimePicker::make('email_verified_at')
+                    ->label("Email Verified At")
+                    ->nullable()
+                    ->default(null)
+                    ->hiddenOn('edit'),
+                TextInput::make('password')->password()
+                    ->label("Input Password")
+                    ->dehydrateStateUsing(fn($state) => filled($state) ? bcrypt($state) : null)
+                    ->required(fn(string $context): bool => $context === 'create')->hiddenOn('edit')
+                    ->visibleOn('create'),
+                Select::make('roles')
+                    ->relationship('roles', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->searchable(),
             ]);
     }
 
@@ -44,7 +68,10 @@ class UserResource extends Resource
             ->columns([
                 TextColumn::make('name')->searchable()->sortable()->label("Name"),
                 TextColumn::make('email')->searchable()->sortable()->label("email"),
-                Textcolumn::make('created_at')->since()->sortable()->label("Created At"),
+                TextColumn::make('email_verified_at')->dateTime()->sortable(),
+                Textcolumn::make('created_at')->dateTime()->sortable()->label("Created At")->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')->dateTime()->sortable()->label("Update At")->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('roles.name')->label("Role")->sortable()->searchable(),
             ])
             ->filters([
                 //
