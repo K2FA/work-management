@@ -6,6 +6,7 @@ use App\Enums\Status;
 use App\Filament\Manager\Resources\TaskResource\Pages;
 use App\Filament\Manager\Resources\TaskResource\RelationManagers;
 use App\Models\Task;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
@@ -33,6 +34,7 @@ class TaskResource extends Resource
                 TextInput::make('name')
                     ->required()
                     ->label("Task Name"),
+
                 Select::make('status')
                     ->label("Task Status")
                     ->options([
@@ -41,12 +43,15 @@ class TaskResource extends Resource
                         Status::done->value => Status::done->value,
                     ])
                     ->default(Status::todo),
+
                 Textarea::make('description')
                     ->nullable()
                     ->label("Task Description"),
+
                 Hidden::make('project_id')
                     ->default(fn() => request()->query('project_id'))
                     ->required(),
+
                 DateTimePicker::make('deadline')
                     ->label("Task Deadline")
                     ->required()
@@ -54,6 +59,7 @@ class TaskResource extends Resource
                     ->format('Y-m-d H:i')
                     ->displayFormat('d/m/Y H:i')
                     ->minutesStep(1),
+
                 Select::make('user_id')
                     ->relationship('user', 'name', modifyQueryUsing: fn($query) => $query->role('Employee'))
                     ->label("Employee")
@@ -70,7 +76,6 @@ class TaskResource extends Resource
                 TextColumn::make('name')->searchable()->sortable()->label("Task Name"),
                 TextColumn::make('description')
                     ->searchable()
-                    ->sortable()
                     ->label("Task Description")
                     ->wrap()
                     ->limit(null),
@@ -149,5 +154,10 @@ class TaskResource extends Resource
             'create' => Pages\CreateTask::route('/create'),
             'edit' => Pages\EditTask::route('/{record}/edit'),
         ];
+    }
+
+    public static function canAccess(): bool
+    {
+        return Filament::auth()->user()?->hasRole('Manager');
     }
 }

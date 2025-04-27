@@ -3,10 +3,8 @@
 namespace App\Filament\Manager\Resources;
 
 use App\Filament\Manager\Resources\ProjectResource\Pages;
-use App\Filament\Manager\Resources\ProjectResource\RelationManagers;
 use App\Models\Project;
 use Filament\Facades\Filament;
-use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -18,14 +16,13 @@ use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 
 class ProjectResource extends Resource
 {
     protected static ?string $model = Project::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+    protected static ?string $navigationIcon = 'heroicon-o-briefcase';
 
     protected static ?string $navigationGroup = "Management";
 
@@ -35,7 +32,9 @@ class ProjectResource extends Resource
     {
         parent::boot();
 
-        session()->forget('current_project_id');
+        if (request()->routeIs('filament.manager.resources.projects.index')) {
+            session()->forget('current_project_id');
+        }
     }
 
     public static function form(Form $form): Form
@@ -48,6 +47,7 @@ class ProjectResource extends Resource
                         TextInput::make('name')
                             ->required()
                             ->label("Project Name"),
+
                         Textarea::make('description')
                             ->nullable()
                             ->label("Project Description")
@@ -59,14 +59,20 @@ class ProjectResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable()->sortable()->label("Name"),
-                TextColumn::make('description')->searchable()->sortable()->label("Description")->wrap()->limit(null),
+                TextColumn::make('name')
+                    ->searchable()
+                    ->sortable()
+                    ->label("Project Name"),
+
+                TextColumn::make('description')
+                    ->searchable()
+                    ->label("Project Description")->wrap()->limit(null),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Action::make('detail')
+                Action::make('task')
                     ->label('Task')
                     ->color('info')
                     ->url(fn($record) => route('filament.manager.resources.tasks.index', ['project_id' => $record->id]))
@@ -81,12 +87,6 @@ class ProjectResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
 
     public static function getPages(): array
     {
