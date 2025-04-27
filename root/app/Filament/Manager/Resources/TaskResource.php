@@ -77,7 +77,7 @@ class TaskResource extends Resource
                 TextColumn::make('status')
                     ->label("Status")
                     ->color(fn($state) => match ($state) {
-                        Status::todo->value => 'info',
+                        Status::todo->value => 'danger',
                         Status::in_progress->value => 'warning',
                         Status::done->value => 'success',
                     })
