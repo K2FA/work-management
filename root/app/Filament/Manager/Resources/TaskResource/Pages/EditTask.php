@@ -16,4 +16,18 @@ class EditTask extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index', ['project_id' => session('current_project_id')]);
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        $projectId = session('current_project_id');
+        return [
+            route('filament.manager.resources.tasks.index', ['project_id' => $projectId]) => 'Tasks',
+            'Edit Task',
+        ];
+    }
 }

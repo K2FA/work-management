@@ -67,12 +67,12 @@ class ProjectResource extends Resource
             ])
             ->actions([
                 Action::make('detail')
-                    ->label('')
+                    ->label('Task')
                     ->color('info')
                     ->url(fn($record) => route('filament.manager.resources.tasks.index', ['project_id' => $record->id]))
-                    ->icon('heroicon-o-eye'),
-                EditAction::make()->label(''),
-                DeleteAction::make()->label(''),
+                    ->icon('heroicon-o-document-duplicate'),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
