@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Auth\Widgets\CustomAccountWidget;
 use App\Filament\Manager\Pages\Dashboard;
+use App\Filament\Navigation\CustomNavigation;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -53,6 +54,7 @@ class ManagerPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->navigation(fn() => CustomNavigation::build())
             ->authMiddleware([
                 Authenticate::class,
             ])
