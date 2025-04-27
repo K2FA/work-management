@@ -2,6 +2,7 @@
 
 use App\Enums\Status;
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,6 +19,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('description')->nullable();
             $table->enum('status', Status::values())->default(Status::todo->value);
+            $table->dateTime('deadline');
+            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Project::class)->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
@@ -28,6 +31,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+
         Schema::dropIfExists('tasks');
     }
 };

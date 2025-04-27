@@ -6,6 +6,7 @@ use App\Enums\Status;
 use App\Filament\Manager\Resources\TaskResource\Pages;
 use App\Filament\Manager\Resources\TaskResource\RelationManagers;
 use App\Models\Task;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -34,13 +35,30 @@ class TaskResource extends Resource
                     ->label("Task Name"),
                 Select::make('status')
                     ->label("Task Status")
-                    ->options(Status::values())
+                    ->options([
+                        Status::todo->value => Status::todo->value,
+                        Status::in_progress->value => Status::in_progress->value,
+                        Status::done->value => Status::done->value,
+                    ])
                     ->default(Status::todo),
                 Textarea::make('description')
                     ->nullable()
                     ->label("Task Description"),
                 Hidden::make('project_id')
                     ->default(fn() => request()->query('project_id'))
+                    ->required(),
+                DateTimePicker::make('deadline')
+                    ->label("Task Deadline")
+                    ->required()
+                    ->minDate(now())
+                    ->format('Y-m-d H:i')
+                    ->displayFormat('d/m/Y H:i')
+                    ->minutesStep(1),
+                Select::make('user_id')
+                    ->relationship('user', 'name', modifyQueryUsing: fn($query) => $query->role('Employee'))
+                    ->label("Employee")
+                    ->preload()
+                    ->searchable()
                     ->required(),
             ]);
     }
@@ -50,16 +68,34 @@ class TaskResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')->searchable()->sortable()->label("Task Name"),
-                TextColumn::make('status')
-                    ->label("Status")
-                    // ->enum(Status::values())
-                    ->sortable(),
                 TextColumn::make('description')
                     ->searchable()
                     ->sortable()
                     ->label("Task Description")
                     ->wrap()
                     ->limit(null),
+                TextColumn::make('status')
+                    ->label("Status")
+                    ->color(fn($state) => match ($state) {
+                        Status::todo->value => 'info',
+                        Status::in_progress->value => 'warning',
+                        Status::done->value => 'success',
+                    })
+                    ->icon(fn($state) => match ($state) {
+                        Status::todo->value => 'heroicon-o-document-text',
+                        Status::in_progress->value => 'heroicon-o-clock',
+                        Status::done->value => 'heroicon-o-check-circle',
+                    })
+                    ->sortable(),
+                TextColumn::make('deadline')
+                    ->dateTime('d-m-Y H:i')
+                    ->sortable()
+                    ->label("Deadline"),
+
+                TextColumn::make('user.name')
+                    ->label('Employee')
+                    ->sortable()
+                    ->searchable()
             ])
             ->filters([
                 //
@@ -74,12 +110,7 @@ class TaskResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ])
-            ->headerActions([
-                CreateAction::make()
-                    ->url(fn() => route('filament.manager.resources.tasks.create', ['project_id' => session('current_project_id')]))
-                    ->visible(fn() => false)
-            ]);;
+            ]);
     }
     private static function redirectToProjectTasks()
     {

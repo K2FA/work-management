@@ -11,11 +11,18 @@ class Task extends Model
         'name',
         'description',
         'status',
+        'deadline',
+        'user_id',
         'project_id',
     ];
 
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }
