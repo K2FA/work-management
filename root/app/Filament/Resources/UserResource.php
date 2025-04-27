@@ -67,7 +67,7 @@ class UserResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')->searchable()->sortable()->label("Name"),
-                TextColumn::make('email')->searchable()->sortable()->label("email"),
+                TextColumn::make('email')->searchable()->sortable()->label("Email"),
                 TextColumn::make('email_verified_at')->dateTime()->sortable(),
                 Textcolumn::make('created_at')->dateTime()->sortable()->label("Created At")->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')->dateTime()->sortable()->label("Update At")->toggleable(isToggledHiddenByDefault: true),

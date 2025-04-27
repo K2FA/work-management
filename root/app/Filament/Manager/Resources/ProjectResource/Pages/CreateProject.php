@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\UserResource\Pages;
+namespace App\Filament\Manager\Resources\ProjectResource\Pages;
 
-use App\Filament\Resources\UserResource;
+use App\Filament\Manager\Resources\ProjectResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
-class CreateUser extends CreateRecord
+class CreateProject extends CreateRecord
 {
-    protected static string $resource = UserResource::class;
+    protected static string $resource = ProjectResource::class;
 
     protected static bool $canCreateAnother = false;
 
