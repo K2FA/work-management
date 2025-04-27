@@ -20,6 +20,8 @@ class ProjectEmployeeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-briefcase';
 
+    protected static ?string $navigationGroup = 'Information';
+
     protected static ?string $navigationLabel = 'Projects';
 
     public static function boot()

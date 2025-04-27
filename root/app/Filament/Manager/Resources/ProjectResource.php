@@ -31,7 +31,6 @@ class ProjectResource extends Resource
     public static function boot()
     {
         parent::boot();
-
         if (request()->routeIs('filament.manager.resources.projects.index')) {
             session()->forget('current_project_id');
         }

@@ -26,6 +26,9 @@ class TaskEmployeeResource extends Resource
 {
     protected static ?string $model = Task::class;
 
+    protected static ?string $navigationGroup = 'Information';
+
+    protected static ?string $navigationLabel = 'Projects';
 
     public static function form(Form $form): Form
     {
