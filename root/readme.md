@@ -38,3 +38,26 @@ DB_PASSWORD=password
 ```bash
 php artisan migrate:fresh --seed
 ```
+
+7. Jalankan Server laravel
+```bash
+php artisan serve
+```
+
+### Account For Testing
+this it account that use for testing the app
+
+```bash
+// Admin
+admin@example.com
+password
+
+// Manager
+manager@example.com
+password
+
+// Employee
+employee@example.com
+password
+```
+
