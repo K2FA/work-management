@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Auth\Widgets\CustomAccountWidget;
 use App\Filament\Manager\Pages\Dashboard;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
@@ -37,7 +38,8 @@ class ManagerPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Manager/Widgets'), for: 'App\\Filament\\Manager\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
+                // Widgets\AccountWidget::class,
+                CustomAccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([

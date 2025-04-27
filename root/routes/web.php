@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CustomLogoutController;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
@@ -12,27 +13,8 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-// Route::view('dashboard', 'dashboard')
-//     ->middleware(['auth', 'verified'])
-//     ->name('dashboard');
-
-// Route::middleware(['auth'])->group(function () {
-//     Route::redirect('settings', 'settings/profile');
-
-//     Route::get('settings/profile', Profile::class)->name('settings.profile');
-//     Route::get('settings/password', Password::class)->name('settings.password');
-//     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
-// });
-
-// require __DIR__ . '/auth.php';
-
 Route::permanentRedirect('/', '/login');
 
-// Route::get('/login', Login::class)->name('login');
-// Route::get('/register', Register::class)->name('register');
-// Route::post('/logout', function () {
-//     Auth::logout();
-//     request()->session()->invalidate();
-//     request()->session()->regenerateToken();
-//     return redirect('/login');
-// })->name('logout');
+Route::post('/admin/logout', [CustomLogoutController::class, 'logout'])->name('filament.admin.auth.logout');
+Route::post('/manager/logout', [CustomLogoutController::class, 'logout'])->name('filament.manager.auth.logout');
+Route::post('/employee/logout', [CustomLogoutController::class, 'logout'])->name('filament.employee.auth.logout');
