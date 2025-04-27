@@ -23,7 +23,7 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user';
 
     protected static ?string $navigationGroup = "User Management";
 
@@ -35,25 +35,29 @@ class UserResource extends Resource
             ->schema([
                 TextInput::make('name')
                     ->required()
-                    ->label("Input Name")
+                    ->label("User Name")
                     ->maxLength(255),
+
                 TextInput::make('email')
                     ->email()
                     ->required()
                     ->maxLength(
                         255
-                    )->label("Input Email")
+                    )->label("User Email")
                     ->unique(ignoreRecord: true),
+
                 DateTimePicker::make('email_verified_at')
                     ->label("Email Verified At")
                     ->nullable()
                     ->default(null)
                     ->hiddenOn('edit'),
+
                 TextInput::make('password')->password()
                     ->label("Input Password")
                     ->dehydrateStateUsing(fn($state) => filled($state) ? bcrypt($state) : null)
                     ->required(fn(string $context): bool => $context === 'create')->hiddenOn('edit')
                     ->visibleOn('create'),
+
                 Select::make('roles')
                     ->relationship('roles', 'name')
                     ->multiple()
