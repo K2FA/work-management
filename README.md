@@ -14,7 +14,7 @@ cd root
 composer install
 ```
 
-3. Copy .env.example and setting DB Host as used, example: MySQL
+3. Copy `.env.example` and setting DB Host as used, example: MySQL
 ```bash
 cp .env.example .env
 ```
@@ -24,7 +24,7 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-5. Setting database in .env file
+5. Setting database in `.env` file
 ```bash
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -43,6 +43,8 @@ php artisan migrate:fresh --seed
 ```bash
 php artisan serve
 ```
+
+8. Buka browser dan masukkan url `127.0.0.1:8000`
 
 ### Account For Testing
 this it account that use for testing the app
