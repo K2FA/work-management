@@ -14,11 +14,7 @@ cd root
 composer install
 ```
 
-3. Copy .env.exa<<<<<<< HEAD
-3. Copy .env.example and setting DB Host as used, example: MySQL
-=======
 3. Copy `.env.example` and setting DB Host as used, example: MySQL
->>>>>>> 0cda54438543a1bf3ebf6c33d2f2eb8db554be99
 ```bash
 cp .env.example .env
 ```
