@@ -32,6 +32,8 @@ class TaskResource extends Resource
      */
     protected static ?string $model = Task::class;
 
+    protected static ?string $heading = 'Task Todo';
+
     /**
      * Define the form schema for creating or editing a task.
      *
@@ -116,15 +118,17 @@ class TaskResource extends Resource
                 // Column for task status, with color and icon based on the status
                 TextColumn::make('status')
                     ->label("Status")
-                    ->color(fn($state) => match ($state) {
-                        Status::todo->value => 'danger',
-                        Status::in_progress->value => 'warning',
-                        Status::done->value => 'success',
+                    ->color(function ($state) {
+                        if ($state === Status::todo->value) return 'danger';
+                        if ($state === Status::in_progress->value) return 'warning';
+                        if ($state === Status::done->value) return 'success';
+                        return 'gray';
                     })
-                    ->icon(fn($state) => match ($state) {
-                        Status::todo->value => 'heroicon-o-document-text',
-                        Status::in_progress->value => 'heroicon-o-clock',
-                        Status::done->value => 'heroicon-o-check-circle',
+                    ->icon(function ($state) {
+                        if ($state === Status::todo->value) return 'heroicon-o-document-text';
+                        if ($state === Status::in_progress->value) return 'heroicon-o-clock';
+                        if ($state === Status::done->value) return 'heroicon-o-check-circle';
+                        return 'heroicon-o-question-mark-circle';
                     })
                     ->sortable(),
 
@@ -146,8 +150,12 @@ class TaskResource extends Resource
             ->actions([ // Actions available for each row in the table
                 EditAction::make()->label(''), // Edit task action
                 DeleteAction::make() // Delete task action
+                    ->action(function (Task $record, $livewire) {
+                        $record->delete();
+                        $livewire->dispatch('taskDeleted');
+                    })
                     ->label('')
-                    ->after(fn() => self::redirectToProjectTasks()) // Redirect after delete action
+                // ->after(fn() => self::redirectToProjectTasks()) // Redirect after delete action
             ])
             ->bulkActions([ // Actions available for bulk operations
                 Tables\Actions\BulkActionGroup::make([
@@ -171,6 +179,8 @@ class TaskResource extends Resource
             return redirect()->to(route('filament.manager.resources.tasks.index', ['project_id' => $projectId]));
         }
     }
+
+
 
     /**
      * Determine whether this resource should be registered in the navigation.
@@ -210,6 +220,7 @@ class TaskResource extends Resource
 
         return $query;
     }
+
 
     /**
      * Define the pages available for this resource.
